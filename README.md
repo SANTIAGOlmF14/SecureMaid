@@ -3,6 +3,23 @@
 App de escritorio en **C# + WPF (.NET 8)** para ocultar, cifrar y camuflar
 archivos y carpetas en tu propio PC.
 
+## Instalación (usuarios finales)
+
+1. Descargá el instalador desde la última versión publicada en GitHub Releases:
+   [`SecureMaid-win-Setup.exe`](https://github.com/SANTIAGOImF14/SecureMaid/releases/latest)
+2. Ejecutalo. Se instala como cualquier programa de Windows y deja un acceso
+   directo en el Escritorio y en el menú de inicio.
+3. No hace falta tener instalado .NET por separado: el instalador incluye
+   todo lo necesario para correr (self-contained).
+
+### Actualizaciones automáticas
+
+SecureMaid revisa en segundo plano, cada vez que se abre, si hay una versión
+más nueva publicada en GitHub Releases (usando [Velopack](https://velopack.io)).
+Si la hay, te pregunta si querés actualizar; si aceptás, la descarga, la
+aplica y reabre la app sola. No requiere ninguna acción manual del usuario
+más allá de aceptar el diálogo.
+
 ## Que incluye
 
 | Función | Cómo funciona | Archivo clave |
@@ -13,6 +30,7 @@ archivos y carpetas en tu propio PC.
 | **Camuflar carpeta / archivo** | Renombra + cambia el ícono con `desktop.ini`, usando íconos nativos de Windows (no necesitas archivos .ico externos). Los archivos solo se renombran. **Opcional: protección con contraseña** (cifra el contenido) y **Descamuflar** para dejarlo todo como estaba | `Managers/DisguiseManager.cs`, `Managers/DisguiseRegistry.cs`, `Views/PasswordPromptDialog.xaml` |
 | **Camuflar la app** | Accesos directos con nombre/ícono personalizados + modo señuelo (calculadora funcional) | `Managers/AppDisguiseManager.cs`, `Views/DecoyCalculatorView.xaml` |
 | **Logo/identidad de la app** | Selector de logo (de la carpeta `Logos`) como icono de ventana/barra de tareas | `Managers/LogoManager.cs` |
+| **Auto-actualización** | Revisa, descarga y aplica nuevas versiones publicadas en GitHub Releases | `App.xaml.cs` (Velopack) |
 
 ## Requisitos para compilar
 
@@ -103,7 +121,34 @@ respuesta que no sean obvias ni públicas. Si además de la contraseña olvidas
 la respuesta a tu pregunta de seguridad, ahí sí no hay forma de recuperar
 los archivos.
 
+## Para desarrolladores: publicar una nueva versión
 
+El instalador y las actualizaciones automáticas se generan con
+[Velopack](https://velopack.io) y se distribuyen como GitHub Releases del
+propio repo (`https://github.com/SANTIAGOImF14/SecureMaid`, público).
+
+1. Subí `Version`, `FileVersion` y `AssemblyVersion` en `SecureMaid.csproj`
+   a la versión nueva (ej. `1.0.1`).
+2. Compilá en Release, self-contained, single-file, parado en la carpeta del
+   proyecto:
+   ```
+   dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
+   ```
+3. Empaquetá con `vpk` (`dotnet tool update -g vpk` si no lo tenés instalado
+   o está desactualizado):
+   ```
+   vpk pack --packId SecureMaid --packVersion 1.0.1 --packDir .\publish --mainExe SecureMaid.exe --runtime win-x64
+   ```
+   El resultado queda en `.\Releases` (instalador `.exe`, `.nupkg`, `RELEASES`,
+   `releases.win.json`, `assets.win.json`).
+4. En GitHub → Releases → *Draft a new release*, tag `v1.0.1`, y subí **todo**
+   el contenido de `.\Releases` como assets. Publicá el release.
+5. Quienes ya tengan una versión anterior instalada van a recibir el aviso de
+   actualización automáticamente la próxima vez que abran la app — no requiere
+   ninguna acción manual de tu parte más allá de publicar el release.
+
+No hay firma de código ni sistema de licencias/activación integrado todavía
+(se maneja por fuera, en la página de ventas).
 
 ## Nota importante
 
