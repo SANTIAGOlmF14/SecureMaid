@@ -1,0 +1,69 @@
+<UserControl x:Class="SecureMaid.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:SecureMaid.Controls">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Background="{DynamicResource BgDark}" PreviewMouseWheel="OnPanelScroll">
+        <Grid Background="{DynamicResource BgDark}" MinHeight="500">
+            <Border Style="{StaticResource Card}" Width="410" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,24" Padding="30,28">
+                <Grid>
+
+                    <!-- ===== Login normal ===== -->
+                    <StackPanel x:Name="LoginPanel">
+                        <Border Width="112" Height="112" CornerRadius="24" Background="{DynamicResource BgElevated}"
+                                BorderBrush="{DynamicResource Accent}" BorderThickness="1.5" HorizontalAlignment="Center" Margin="0,0,0,20">
+                            <Image x:Name="LogoImage" Width="82" Height="82" Stretch="Uniform"/>
+                        </Border>
+                        <TextBlock Text="Ingresa tu contraseña" Style="{StaticResource PageTitle}" FontSize="19"
+                                   HorizontalAlignment="Center" Margin="0,0,0,22"/>
+
+                        <controls:PasswordField x:Name="PasswordBox1" Margin="0,0,0,14" EnterPressed="OnPasswordKeyDown"/>
+
+                        <TextBlock x:Name="ErrorText" Style="{StaticResource ErrorInlineText}"
+                                   Margin="0,0,0,12" Visibility="Collapsed" Text="Contraseña incorrecta."/>
+
+                        <Button Content="Desbloquear" Style="{StaticResource PrimaryButton}" Click="OnUnlockClick"/>
+
+                        <Button x:Name="ForgotPasswordLink" Content="¿Olvidaste tu contraseña?" HorizontalAlignment="Center"
+                                Background="Transparent" BorderThickness="0" Foreground="{DynamicResource Accent2}"
+                                FontSize="12.5" Cursor="Hand" Margin="0,18,0,0" Click="OnForgotPasswordClick"/>
+                    </StackPanel>
+
+                    <!-- ===== Recuperar contraseña olvidada ===== -->
+                    <StackPanel x:Name="RecoveryPanel" Visibility="Collapsed">
+                        <Border Width="52" Height="52" CornerRadius="14" Background="{DynamicResource BgElevated}"
+                                BorderBrush="{DynamicResource Border}" BorderThickness="1" HorizontalAlignment="Center" Margin="0,0,0,14">
+                            <Path Data="{StaticResource IconSettings}" Width="26" Height="26" Stretch="Uniform"
+                                  Stroke="{DynamicResource Accent2}" StrokeThickness="1.6" StrokeLineJoin="Round"/>
+                        </Border>
+                        <TextBlock Text="Recuperar acceso" Style="{StaticResource PageTitle}" FontSize="19"
+                                   HorizontalAlignment="Center" Margin="0,0,0,22"/>
+
+                        <!-- Paso 1: responder la pregunta de seguridad -->
+                        <StackPanel x:Name="RecoveryStepAnswer">
+                            <TextBlock x:Name="RecoveryQuestionText" Style="{StaticResource FieldLabel}"
+                                       FontSize="13" TextWrapping="Wrap" Margin="0,0,0,12"/>
+                            <TextBox x:Name="RecoveryAnswerBox" Margin="0,0,0,12" KeyDown="OnRecoveryAnswerKeyDown"/>
+                            <TextBlock x:Name="RecoveryError" Style="{StaticResource ErrorInlineText}"
+                                       Margin="0,0,0,12" Visibility="Collapsed"/>
+                            <Button Content="Verificar respuesta" Style="{StaticResource PrimaryButton}" Click="OnVerifyAnswer"/>
+                        </StackPanel>
+
+                        <!-- Paso 2: definir la nueva contraseña -->
+                        <StackPanel x:Name="RecoveryStepNewPassword" Visibility="Collapsed">
+                            <TextBlock Text="Nueva contraseña" Style="{StaticResource FieldLabel}" Margin="0,0,0,8"/>
+                            <controls:PasswordField x:Name="NewPasswordBox" Margin="0,0,0,14"/>
+                            <TextBlock Text="Confirmar nueva contraseña" Style="{StaticResource FieldLabel}" Margin="0,0,0,8"/>
+                            <controls:PasswordField x:Name="NewPasswordBox2" Margin="0,0,0,14"/>
+                            <TextBlock x:Name="RecoveryError2" Style="{StaticResource ErrorInlineText}"
+                                       Margin="0,0,0,12" Visibility="Collapsed"/>
+                            <Button Content="Restablecer contraseña" Style="{StaticResource PrimaryButton}" Click="OnResetPassword"/>
+                        </StackPanel>
+
+                        <Button Content="Cancelar" Style="{StaticResource GhostButton}" Margin="0,18,0,0" Click="OnCancelRecovery"/>
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,29 @@
+<Window x:Class="SecureMaid.Views.InputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SecureMaid"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ResizeMode="NoResize" ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner" SizeToContent="WidthAndHeight"
+        FontFamily="Segoe UI" KeyDown="OnKeyDown">
+    <Border Style="{StaticResource Card}" Width="420" Margin="24">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="30" ShadowDepth="8" Opacity="0.45" Color="Black"/>
+        </Border.Effect>
+        <StackPanel>
+            <Grid Margin="0,0,0,16">
+                <TextBlock x:Name="TitleText" Text="Nuevo" Style="{StaticResource CardTitle}" FontSize="17" VerticalAlignment="Center"/>
+                <Button Content="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource IconButton}"
+                        Width="30" Height="30" HorizontalAlignment="Right" Margin="0,-6,-6,0" Click="OnCancelClick"/>
+            </Grid>
+
+            <TextBlock x:Name="PromptText" Style="{StaticResource FieldLabel}" Margin="0,0,0,8" TextWrapping="Wrap"/>
+            <TextBox x:Name="ValueBox" Margin="0,0,0,22" KeyDown="OnKeyDown"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancelar" Style="{StaticResource GhostButton}" Click="OnCancelClick" Margin="0,0,10,0" MinWidth="96"/>
+                <Button Content="Aceptar" Style="{StaticResource PrimaryButton}" Click="OnOkClick" MinWidth="96"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

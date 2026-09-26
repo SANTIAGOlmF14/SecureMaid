@@ -1,0 +1,19 @@
+<Application x:Class="SecureMaid.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Posicion 0: paleta de colores del tema activo (Dark u Light).
+                     ThemeManager reemplaza este diccionario en tiempo de
+                     ejecucion para cambiar de tema sin reiniciar la app. -->
+                <ResourceDictionary Source="Themes/Dark.xaml"/>
+                <!-- Posicion 1: estilos/plantillas de controles. Usan
+                     DynamicResource para los colores, asi que se actualizan
+                     solos cuando cambia el diccionario de arriba. -->
+                <ResourceDictionary Source="Themes/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

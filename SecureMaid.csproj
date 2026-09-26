@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>SecureMaid</AssemblyName>
+    <RootNamespace>SecureMaid</RootNamespace>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <Platforms>x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Sin dependencias externas: todo con lo que trae .NET 8 -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Los logos se copian al directorio de salida para poder cargarlos en
+         tiempo de ejecucion (icono de ventana / selector de logo en Ajustes). -->
+    <Content Include="Logos\**\*.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>
