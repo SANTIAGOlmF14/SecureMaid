@@ -10,10 +10,21 @@
     <RootNamespace>SecureMaid</RootNamespace>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
     <Platforms>x64</Platforms>
+
+    <!-- Metadata del .exe: lo que ve el usuario en Propiedades > Detalles en Windows. -->
+    <Product>SecureMaid</Product>
+    <AssemblyTitle>SecureMaid</AssemblyTitle>
+    <Company>SecureMaid</Company>
+    <Description>Oculta, cifra y camufla archivos y carpetas.</Description>
+    <Copyright>© 2026 SecureMaid</Copyright>
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Sin dependencias externas: todo con lo que trae .NET 8 -->
+    <!-- Auto-actualizaciones e instalador via GitHub Releases. -->
+    <PackageReference Include="Velopack" Version="1.2.158" />
   </ItemGroup>
 
   <ItemGroup>
