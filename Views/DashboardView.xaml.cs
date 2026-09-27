@@ -32,6 +32,10 @@ public partial class DashboardView : UserControl
 
     private bool _loadingTheme;
 
+    // Resultado del ultimo "Buscar actualizaciones" en Ajustes, guardado para
+    // que "Actualizar ahora" no tenga que volver a consultar GitHub.
+    private Velopack.UpdateInfo? _pendingUpdate;
+
     public DashboardView()
     {
         InitializeComponent();
@@ -41,6 +45,7 @@ public partial class DashboardView : UserControl
         LoadThemeOptions();
         LoadChangePasswordSection();
         LoadSecurityQuestionSection();
+        LoadUpdateSection();
         InitializeData();
 
         // Las columnas de estas listas tenian ancho fijo: al achicar la ventana no
@@ -83,6 +88,7 @@ public partial class DashboardView : UserControl
         SidebarAppName.Text = PasswordManager.Settings.DisguisedAppName;
         var bmp = LogoManager.LoadCurrentLogoBitmap(130);
         if (bmp != null) SidebarLogo.Source = bmp;
+        SidebarVersionText.Text = $"v{UpdateService.CurrentVersion}";
     }
 
     // ---------------- Apariencia (tema oscuro/claro) ----------------
@@ -1380,6 +1386,75 @@ public partial class DashboardView : UserControl
         catch (Exception ex)
         {
             SettingsStatus.Text = "No se pudo crear el acceso directo: " + ex.Message;
+        }
+    }
+
+    // ---------------- Actualizaciones ----------------
+
+    private void LoadUpdateSection()
+    {
+        InstalledVersionText.Text = $"Version instalada: v{UpdateService.CurrentVersion}";
+        UpdateStatusText.Text = "";
+        UpdateNowButton.Visibility = Visibility.Collapsed;
+        _pendingUpdate = null;
+    }
+
+    private async void OnCheckForUpdates(object sender, RoutedEventArgs e)
+    {
+        CheckUpdatesButton.IsEnabled = false;
+        UpdateNowButton.Visibility = Visibility.Collapsed;
+        UpdateStatusText.Style = (Style)FindResource("HelperText");
+        UpdateStatusText.Text = "Buscando actualizaciones...";
+        _pendingUpdate = null;
+
+        try
+        {
+            var info = await UpdateService.CheckForUpdatesAsync();
+            _pendingUpdate = info;
+
+            if (info == null)
+            {
+                UpdateStatusText.Style = (Style)FindResource("SuccessInlineText");
+                UpdateStatusText.Text = $"Tienes la ultima version instalada (v{UpdateService.CurrentVersion}).";
+            }
+            else
+            {
+                UpdateStatusText.Style = (Style)FindResource("HelperText");
+                UpdateStatusText.Text = $"Hay una nueva actualizacion disponible: v{info.TargetFullRelease.Version}";
+                UpdateNowButton.Visibility = Visibility.Visible;
+            }
+        }
+        catch
+        {
+            UpdateStatusText.Style = (Style)FindResource("ErrorInlineText");
+            UpdateStatusText.Text = "No se pudo comprobar: revisa tu conexion a internet e intenta de nuevo.";
+        }
+        finally
+        {
+            CheckUpdatesButton.IsEnabled = true;
+        }
+    }
+
+    private async void OnUpdateNow(object sender, RoutedEventArgs e)
+    {
+        if (_pendingUpdate == null) return;
+
+        UpdateNowButton.IsEnabled = false;
+        CheckUpdatesButton.IsEnabled = false;
+        UpdateStatusText.Style = (Style)FindResource("HelperText");
+        UpdateStatusText.Text = "Descargando actualizacion... la app se reiniciara sola al terminar.";
+
+        try
+        {
+            await UpdateService.DownloadAndApplyAsync(_pendingUpdate);
+            // Si todo sale bien, la app se cierra y reabre sola aca mismo.
+        }
+        catch (Exception ex)
+        {
+            UpdateStatusText.Style = (Style)FindResource("ErrorInlineText");
+            UpdateStatusText.Text = "No se pudo descargar o aplicar la actualizacion: " + ex.Message;
+            UpdateNowButton.IsEnabled = true;
+            CheckUpdatesButton.IsEnabled = true;
         }
     }
 }

@@ -3,17 +3,11 @@ using System.Windows;
 using SecureMaid.Controls;
 using SecureMaid.Helpers;
 using Velopack;
-using Velopack.Sources;
 
 namespace SecureMaid;
 
 public partial class App : Application
 {
-    // URL de tu repo de GitHub (la misma carpeta que ves en github.com/usuario/repo).
-    // Si el repo es PRIVADO, tambien tenes que completar el accessToken mas abajo,
-    // en CheckForUpdatesAsync, o esto nunca va a poder leer el feed de releases.
-    private const string GithubRepoUrl = "https://github.com/SANTIAGOlmF14/SecureMaid.git";
-
     protected override void OnStartup(StartupEventArgs e)
     {
         // Tiene que ser la PRIMERA linea de todas, antes que cualquier otra cosa
@@ -35,12 +29,7 @@ public partial class App : Application
     {
         try
         {
-            var mgr = new UpdateManager(new GithubSource(
-                GithubRepoUrl,
-                accessToken: null, // repo privado -> poné acá tu Personal Access Token
-                prerelease: false));
-
-            var newVersion = await mgr.CheckForUpdatesAsync();
+            var newVersion = await UpdateService.CheckForUpdatesAsync();
             if (newVersion == null) return; // ya esta en la ultima version
 
             var result = AppMessageBox.Show(
@@ -49,12 +38,12 @@ public partial class App : Application
 
             if (result != MessageBoxResult.Yes) return; // el usuario dijo que no: sigue con la version actual
 
-            await mgr.DownloadUpdatesAsync(newVersion);
-            mgr.ApplyUpdatesAndRestart(newVersion); // cierra la app, instala, y la reabre sola
+            await UpdateService.DownloadAndApplyAsync(newVersion); // descarga, cierra la app, instala, y la reabre sola
         }
         catch
         {
             // Sin internet, o el repo/release todavia no existe: no molestamos al usuario.
+            // (El boton "Buscar actualizaciones" de Ajustes sirve para diagnosticar esto a mano.)
         }
     }
 }
